@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Auth;
 
-use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +9,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
-class LoginRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,8 +27,25 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => ['required', 'string', 'regex:/^\+372\d{7,8}$/'],
-            'password' => ['required', 'string'],
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|regex:/^\+372\d{7,8}$/',
+            'password' => 'required|confirmed',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'The name field is required.',
+            'name.string' => 'The name must be a string.',
+            'name.max' => 'The name cannot be longer than 255 characters.',
+
+            'phone.required' => 'The phone field is required.',
+            'phone.string' => 'The phone number must be a string.',
+            'phone.regex' => 'The phone number must start with +372 and contain 7 or 8 digits.',
+
+            'password.required' => 'The password field is required.',
+            'password.confirmed' => 'The passwords do not match.',
         ];
     }
 
@@ -40,24 +56,9 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
-        // Получаем номер телефона и пароль из запроса
-        $credentials = $this->only('phone', 'password');
-        $remember = $this->boolean('remember');
-    
-        // Проверяем, существует ли пользователь с таким телефоном
-        $user = User::where('phone', $credentials['phone'])->first();
-    
-        // Если пользователь не найден или его статус не активен
-        if (!$user || $user->phone_verified === 0) { 
-            // Выбрасываем ошибку, если пользователь не существует или его статус равен false
-            throw ValidationException::withMessages([
-                'phone' => 'Your account is deactivated or invalid.',
-            ]);
-        }
-
         $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt($credentials, $remember)) {
+        if (! Auth::attempt($this->only('phone', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
