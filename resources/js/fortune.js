@@ -2,9 +2,22 @@ const cases = [
     { 
         name: "Кейс 1", 
         prizes: [
-            { name: "Шаурма", image: "https://foxeslovelemons.com/wp-content/uploads/2023/06/Chicken-Shawarma-8-500x500.jpg", color: "#ffcc00", chance: 10 },
-            { name: "Бургер", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyDcH_MxdsTsK6KMVon-Ybfa2WiT-R70ZjWw&s", color: "#ff6600", chance: 40 },
-            { name: "Картошка фри", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8ae8p5fO5SDVCFj-xEWTJaECdaCkzSx0jsA&s", color: "#ff3300", chance: 50 }
+            { name: "Шаурма", image: "https://pngimg.com/d/shawarma_PNG4.png", color: "#ff3300", chance: 0.5 },
+            { name: "Шаурма", image: "https://pngimg.com/d/shawarma_PNG4.png", color: "#ff3300", chance: 0.5 },
+            { name: "Бургер", image: "https://vectorjungal.com/files/preview/960x960/11720079796mczpxbo8rphstladkfiklhuoaoespxwz9j2kvofdh0awwwd1qtamwj80yfjpebysskhdkzkflbrm1j3gxiengv6ciadsi1iina7a.png", color: "#ff3300", chance: 1 },
+            { name: "Картошка фри", image: "https://static.vecteezy.com/system/resources/thumbnails/046/544/935/small/french-fries-flying-out-of-paper-bucket-isolated-on-a-transparent-background-png.png", color: "#a841ff", chance: 5 },
+            { name: "Картошка фри", image: "https://static.vecteezy.com/system/resources/thumbnails/046/544/935/small/french-fries-flying-out-of-paper-bucket-isolated-on-a-transparent-background-png.png", color: "#a841ff", chance: 5 },
+            { name: "50 discount", image: "https://png.pngtree.com/png-vector/20220826/ourmid/pngtree-50-discount-offer-vector-transparent-png-image_6124907.png", color: "#87d743", chance: 8 },
+            { name: "50 discount", image: "https://png.pngtree.com/png-vector/20220826/ourmid/pngtree-50-discount-offer-vector-transparent-png-image_6124907.png", color: "#87d743", chance: 8 },
+            { name: "50 discount", image: "https://png.pngtree.com/png-vector/20220826/ourmid/pngtree-50-discount-offer-vector-transparent-png-image_6124907.png", color: "#87d743", chance: 8 },
+            { name: "50 discount", image: "https://png.pngtree.com/png-vector/20220826/ourmid/pngtree-50-discount-offer-vector-transparent-png-image_6124907.png", color: "#87d743", chance: 8 },
+            { name: "50 discount", image: "https://png.pngtree.com/png-vector/20220826/ourmid/pngtree-50-discount-offer-vector-transparent-png-image_6124907.png", color: "#87d743", chance: 8 },
+            { name: "50 discount", image: "https://png.pngtree.com/png-vector/20220826/ourmid/pngtree-50-discount-offer-vector-transparent-png-image_6124907.png", color: "#87d743", chance: 8 },
+            { name: "50 discount", image: "https://png.pngtree.com/png-vector/20220826/ourmid/pngtree-50-discount-offer-vector-transparent-png-image_6124907.png", color: "#87d743", chance: 8 },
+            { name: "10 discount", image: "https://gallery.yopriceville.com/var/albums/Free-Clipart-Pictures/Sale-Stickers-PNG/-10%25_Sale_Off_PNG_Clipart_Image.png?m=1629814322", color: "#d1d1d1", chance: 17 },
+            { name: "10 discount", image: "https://gallery.yopriceville.com/var/albums/Free-Clipart-Pictures/Sale-Stickers-PNG/-10%25_Sale_Off_PNG_Clipart_Image.png?m=1629814322", color: "#d1d1d1", chance: 17 },
+            { name: "10 discount", image: "https://gallery.yopriceville.com/var/albums/Free-Clipart-Pictures/Sale-Stickers-PNG/-10%25_Sale_Off_PNG_Clipart_Image.png?m=1629814322", color: "#d1d1d1", chance: 17 },
+            { name: "10 discount", image: "https://gallery.yopriceville.com/var/albums/Free-Clipart-Pictures/Sale-Stickers-PNG/-10%25_Sale_Off_PNG_Clipart_Image.png?m=1629814322", color: "#d1d1d1", chance: 17 },
         ]
     },
     { 
@@ -34,12 +47,13 @@ const resultText = document.getElementById("result");
 let isSpinning = false;
 let currentPrizes = [];
 let animationId;
+let caseIndex = null;
 
 caseButtons.forEach(button => {
     button.addEventListener("click", (event) => {
         if (isSpinning) return;
 
-        const caseIndex = event.target.dataset.case;
+        caseIndex = event.target.dataset.case;
         currentPrizes = generatePrizeList(cases[caseIndex].prizes);
         displayPrizes(cases[caseIndex].prizes);
     });
@@ -47,6 +61,7 @@ caseButtons.forEach(button => {
 
 spinButton.addEventListener("click", () => {
     if (!currentPrizes.length || isSpinning) return;
+    currentPrizes = generatePrizeList(cases[caseIndex].prizes);
     startRoulette();
 });
 
@@ -64,18 +79,25 @@ function displayPrizes(prizes) {
     prizesContainer.innerHTML = "";
     prizes.forEach(prize => {
         let item = document.createElement("div");
-        item.classList.add("prizes_item");
+        item.className = "relative cases_list__item aspect-square rounded-lg flex flex-col items-center justify-center border-b-[3px] overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-lg";
+        item.style.borderColor = prize.color;
+
+        let lightEffect = document.createElement("div");
+        lightEffect.className = "absolute prize_item__light";
+        lightEffect.style.boxShadow = `0 0 70px 40px ${prize.color}`;
+
+        let gradientOverlay = document.createElement("div");
+        gradientOverlay.className = "absolute inset-0 bg-gradient-to-t cases_list__itemBg transition-opacity";
+        gradientOverlay.style.background = `linear-gradient(to top, ${prize.color}, transparent)`;
 
         let img = document.createElement("img");
+        img.className = "relative z-10 text-3xl mb-1 p-4 show_prizes__image";
         img.src = prize.image;
-        img.classList.add("prize-img");
+        img.alt = prize.name;
 
-        let styleBlock = document.createElement("div");
-        styleBlock.classList.add("prizes_item__style");
-        styleBlock.style.background = `linear-gradient(0deg, ${prize.color}, transparent)`;
-
+        item.appendChild(lightEffect);
+        item.appendChild(gradientOverlay);
         item.appendChild(img);
-        item.appendChild(styleBlock);
         prizesContainer.appendChild(item);
     });
 }
@@ -89,31 +111,36 @@ function startRoulette() {
     currentPrizes.forEach(prize => {
         const prizeElement = document.createElement("div");
         prizeElement.classList.add("prize");
-        prizeElement.style.border = `3px solid ${prize.color}`;
+        prizeElement.style.borderBottom = `2px solid ${prize.color}`;
+        prizeElement.style.background = `linear-gradient(to top, ${prize.color}60, transparent, transparent)`;
+
+        const lightEffect = document.createElement("div");
+        lightEffect.className = "absolute prize_item__light";
+        lightEffect.style.boxShadow = `0 0 70px 40px ${prize.color}`;
 
         let img = document.createElement("img");
         img.src = prize.image;
         img.width = 50;
         img.height = 50;
         
+        prizeElement.appendChild(lightEffect);
         prizeElement.appendChild(img);
         roulette.appendChild(prizeElement);
     });
 
     roulette.style.left = "0px";
-    let speed = 20;
-    let interval = setInterval(() => {
-        speed -= 0.5;
-        if (speed <= 0.2) {
-            clearInterval(interval);
-            determinePrize();
-            isSpinning = false;
-            spinButton.disabled = false;
-        }
-    }, 100);
+    let speed = 50;
+    let timeElapsed = 0;
+    let duration = 10000; // 10 секунд
+    let startTime = performance.now();
 
-    function animate() {
+    function animate(currentTime) {
         if (!isSpinning) return;
+        timeElapsed = currentTime - startTime;
+        
+        let progress = timeElapsed / duration;
+        speed = Math.max(50 * (1 - progress), 0.5);
+        
         let left = parseInt(roulette.style.left || "0", 10);
         left -= speed;
         roulette.style.left = left + "px";
@@ -122,25 +149,59 @@ function startRoulette() {
             roulette.appendChild(roulette.firstElementChild);
             roulette.style.left = "0px";
         }
-        animationId = requestAnimationFrame(animate);
+        
+        if (timeElapsed < duration) {
+            animationId = requestAnimationFrame(animate);
+        } else {
+            clearTimeout(animationId);
+            determinePrize();
+            isSpinning = false;
+            spinButton.disabled = false;
+        }
     }
 
-    cancelAnimationFrame(animationId);
-    animate();
+    animationId = requestAnimationFrame(animate);
 }
 
 function determinePrize() {
     const marker = document.querySelector(".marker");
     const markerCenter = marker.getBoundingClientRect().left + marker.offsetWidth / 2;
     const prizesElements = document.querySelectorAll(".prize");
+    let closestPrize = null;
+    let minDistance = Infinity;
     let winningPrize = null;
 
     prizesElements.forEach(prize => {
         const rect = prize.getBoundingClientRect();
-        if (markerCenter >= rect.left && markerCenter <= rect.right) {
-            winningPrize = prize.firstChild.src;
+        const prizeCenter = rect.left + rect.width / 2;
+        let distance = Math.abs(markerCenter - prizeCenter);
+        if (distance < minDistance) {
+            minDistance = distance;
+            closestPrize = prize;
         }
     });
 
-    resultText.innerHTML = winningPrize ? `<img src="${winningPrize}" width="100">` : "Ошибка определения!";
+    if (closestPrize) {
+        closestPrize.classList.add("winner-glow");
+        
+        // Находим индекс выигрыша в currentPrizes
+        const winningPrizeIndex = Array.from(prizesElements).indexOf(closestPrize);
+        winningPrize = currentPrizes[winningPrizeIndex]; // Получаем приз из массива currentPrizes
+        
+        // Теперь находим этот приз в массиве cases
+        const caseIndex = cases.findIndex(caseItem => 
+            caseItem.prizes.some(prize => prize.id === winningPrize.id)
+        );
+        
+        const caseItem = cases[caseIndex]; // Получаем объект кейса
+        const prizeItem = caseItem.prizes.find(prize => prize.id === winningPrize.id); // Получаем выигравший приз
+
+        // Выводим в консоль объект с полным описанием выигрыша
+        console.log("Выигранный приз:", prizeItem);
+        
+        // Отображаем картинку в resultText
+        resultText.innerHTML = `<img src="${closestPrize.querySelector("img").src}" width="100">`;
+    } else {
+        resultText.textContent = "Ошибка определения!";
+    }
 }
