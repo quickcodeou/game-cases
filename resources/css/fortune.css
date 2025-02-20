@@ -6,7 +6,12 @@ body {
 }
 
 .cases {
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin: 20px 40px;
+  flex-wrap: wrap;
 }
 
 .case-btn {
@@ -14,6 +19,7 @@ body {
   margin: 5px;
   font-size: 16px;
   cursor: pointer;
+  position: relative;
 }
 
 .prizes-container {
@@ -44,6 +50,7 @@ position: absolute;
 height: 80%;
 align-items: center;
 white-space: nowrap;
+backdrop-filter: blur(1px);
 }
 
 .prize {
@@ -85,13 +92,8 @@ background-color: #ffffff;
 transform: translateX(-50%) rotate(45deg);
 z-index: 1;
 border-radius: 4px;
-}
+} 
 
-#result {
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 10px;
-}
 img.prize-img {
   width: 150px;
   height: 150px;
@@ -216,6 +218,7 @@ height: 12px;
 }
 .cases_list__item{
   cursor: pointer;
+  backdrop-filter: blur(1px);
 }
 .cases_list__itemBg{
   opacity: 0.1;
@@ -223,4 +226,123 @@ height: 12px;
 .cases_list__item:hover .cases_list__itemBg{
   opacity: 0.2;
   transform: scale(1.2);
+}
+button.case-btn .case_img {
+  height: 180px;
+  transition: 0.6s ease;
+}
+button.case-btn .case_img:hover{
+  transform: scale(1.1) rotate(5deg);
+}
+button.case-btn::after {
+  content: '';
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 1px 1px 50px 35px #FF9800;
+  position: absolute;
+  z-index: -1;
+  opacity: 0.6;
+}
+
+/* win ticket */
+.win_prize__bgBlur {
+  backdrop-filter: blur(8px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 900;
+  overflow-x: hidden;
+}
+.result {
+  position: relative;
+}
+.win_prize__container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  animation: showModal 0.5s ease-out forwards;
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@keyframes showModal {
+  from {
+      transform: translate(-50%, -50%) scale(0);
+  }
+  to {
+      transform: translate(-50%, -50%) scale(1);
+  }
+}
+.result img.win_prize__item {
+  position: relative;
+  z-index: 1;
+  height: 280px;
+  object-fit: contain;
+  width: 280px;
+  transform: scale(0) rotate(0deg);
+  animation: flyPrize 1s ease-out 0.5s forwards;
+}
+.prize_bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  animation: flyPrizeBg 1s ease-out 0.5s forwards;
+}
+@keyframes flyPrize {
+  0% {
+      transform: scale(0) rotate(0deg);
+      opacity: 0;
+  }
+  50% {
+      opacity: 1;
+  }
+  100% {
+      transform: scale(1) rotate(5deg);
+      opacity: 1;
+  }
+}
+@keyframes flyPrizeBg {
+  0% {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+  }
+  50% {
+      opacity: 1;
+  }
+  100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+  }
+}
+
+.confetti {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: gold;
+  opacity: 0.8;
+  border-radius: 50%;
+  animation: confettiFall 1.5s ease-out infinite;
+  z-index: 999;
+}
+@keyframes confettiFall {
+  from {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+  to {
+      transform: translateY(150px) translateX(30px) rotate(360deg);
+      opacity: 0;
+  }
 }

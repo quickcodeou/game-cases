@@ -100,7 +100,13 @@ function displayPrizes(prizes) {
         item.appendChild(img);
         prizesContainer.appendChild(item);
     });
+}
+function startRoulette() {
+    isSpinning = true;
+    spinButton.disabled = true;
     roulette.innerHTML = "";
+    resultItem.textContent = "";
+
     currentPrizes.forEach(prize => {
         const prizeElement = document.createElement("div");
         prizeElement.classList.add("prize");
@@ -120,178 +126,49 @@ function displayPrizes(prizes) {
         prizeElement.appendChild(img);
         roulette.appendChild(prizeElement);
     });
-}
 
-// function startRoulette() {
-//     isSpinning = true;
-//     spinButton.disabled = true;
-//     roulette.innerHTML = "";
-//     resultItem.textContent = "";
+    roulette.style.left = "0px";
+    let speed = 50;
+    let timeElapsed = 0;
+    let duration = 13000; // 13 секунд
+    let slowDownTime = 10000; // После 10 секунд – одинаковая медленная скорость
+    let minSpeed = 1; // Минимальная скорость в конце
+    let startTime = performance.now();
 
-//     currentPrizes.forEach(prize => {
-//         const prizeElement = document.createElement("div");
-//         prizeElement.classList.add("prize");
-//         prizeElement.style.borderBottom = `2px solid ${prize.color}`;
-//         prizeElement.style.background = `linear-gradient(to top, ${prize.color}60, transparent, transparent)`;
-
-//         const lightEffect = document.createElement("div");
-//         lightEffect.className = "absolute prize_item__light";
-//         lightEffect.style.boxShadow = `0 0 70px 40px ${prize.color}`;
-
-//         let img = document.createElement("img");
-//         img.src = prize.image;
-//         img.width = 50;
-//         img.height = 50;
+    function animate(currentTime) {
+        if (!isSpinning) return;
+        timeElapsed = currentTime - startTime;
         
-//         prizeElement.appendChild(lightEffect);
-//         prizeElement.appendChild(img);
-//         roulette.appendChild(prizeElement);
-//     });
+        if (timeElapsed < slowDownTime) {
+            // Плавное замедление
+            let progress = timeElapsed / slowDownTime;
+            speed = Math.max(50 * (1 - progress), minSpeed);
+        } else {
+            // Последние 3 секунды — одинаковая медленная скорость
+            speed = minSpeed;
+        }
 
-//     roulette.style.left = "0px";
-//     let speed = 0;
-//     let timeElapsed = 0;
-//     let duration = 22000; // 22 секунды (увеличили общее время)
-//     let startTime = performance.now();
+        let left = parseInt(roulette.style.left || "0", 10);
+        left -= speed;
+        roulette.style.left = left + "px";
 
-//     function animate(currentTime) {
-//         if (!isSpinning) return;
-//         timeElapsed = currentTime - startTime;
-        
-//         // Этапы анимации
-//         if (timeElapsed < 5000) {
-//             speed = lerp(speed, 50, 0.1);
-//         } else if (timeElapsed < 12000) {
-//             speed = lerp(speed, 2, 0.08);
-//         } else if (timeElapsed < 20000) {
-//             speed = lerp(speed, 1, 0.04);
-//         } else {
-//             speed = lerp(speed, 0, 0.02);
-//         }
-
-//         let left = parseInt(roulette.style.left || "0", 10);
-//         left -= speed;
-//         roulette.style.left = left + "px";
-
-//         if (Math.abs(left) >= roulette.firstElementChild.offsetWidth) {
-//             roulette.appendChild(roulette.firstElementChild);
-//             roulette.style.left = "0px";
-//         }
-        
-//         if (timeElapsed < duration) {
-//             animationId = requestAnimationFrame(animate);
-//         } else {
-//             clearTimeout(animationId);
-//             determinePrize();
-//             isSpinning = false;
-//             spinButton.disabled = false;
-//         }
-//     }
-
-//     // Функция для плавного изменения скорости
-//     function lerp(start, end, amt) {
-//         return (1 - amt) * start + amt * end;
-//     }
-
-//     animationId = requestAnimationFrame(animate);
-// }
-
-
-        // if (timeElapsed < 5000) {
-        //     speed = lerp(speed, 50, 0.1);
-        // } else if (timeElapsed < 12000) {
-        //     speed = lerp(speed, 2, 0.08);
-        // } else if (timeElapsed < 20000) {
-        //     speed = lerp(speed, 1, 0.04);
-        // } else {
-        //     speed = lerp(speed, 0, 0.02);
-        // }
-
-        function startRoulette() {
-            isSpinning = true;
-            spinButton.disabled = true;
-            roulette.innerHTML = "";
-            resultItem.textContent = "";
-        
-            currentPrizes.forEach(prize => {
-                const prizeElement = document.createElement("div");
-                prizeElement.classList.add("prize");
-                prizeElement.style.borderBottom = `2px solid ${prize.color}`;
-                prizeElement.style.background = `linear-gradient(to top, ${prize.color}60, transparent, transparent)`;
-        
-                const lightEffect = document.createElement("div");
-                lightEffect.className = "absolute prize_item__light";
-                lightEffect.style.boxShadow = `0 0 70px 40px ${prize.color}`;
-        
-                let img = document.createElement("img");
-                img.src = prize.image;
-                img.width = 50;
-                img.height = 50;
-                
-                prizeElement.appendChild(lightEffect);
-                prizeElement.appendChild(img);
-                roulette.appendChild(prizeElement);
-            });
-        
+        if (Math.abs(left) >= roulette.firstElementChild.offsetWidth) {
+            roulette.appendChild(roulette.firstElementChild);
             roulette.style.left = "0px";
-            let speed = 0;
-            let timeElapsed = 0;
-            let duration = 22000; // 22 секунды (увеличили общее время)
-            let startTime = performance.now();
-            let targetSpeed = 40; // Начальная целевая скорость
-            let transitionFactor = 0.1; // Начальный коэффициент плавности
-        
-            function animate(currentTime) {
-                if (!isSpinning) return;
-                timeElapsed = currentTime - startTime;
-
-                if (timeElapsed < 4000) {
-                    speed = lerp(speed, 50, 0.1);
-                } else if (timeElapsed < 8000) {
-                    speed = lerp(speed, 30, 0.08);
-                } else if (timeElapsed < 10000) {
-                    speed = lerp(speed, 15, 0.06);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 5, 0.05);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 2, 0.04);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 1.5, 0.03);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 1.2, 0.02);
-                } else if (timeElapsed < 22000) { 
-                    speed = lerp(speed, 1, 0.01); 
-                } else {
-                    speed = lerp(speed, 0, 0.01);
-                }
-        
-                let left = parseInt(roulette.style.left || "0", 10);
-                left -= speed;
-                roulette.style.left = left + "px";
-        
-                if (Math.abs(left) >= roulette.firstElementChild.offsetWidth) {
-                    roulette.appendChild(roulette.firstElementChild);
-                    roulette.style.left = "0px";
-                }
-                
-                if (timeElapsed < duration) {
-                    animationId = requestAnimationFrame(animate);
-                } else {
-                    clearTimeout(animationId);
-                    determinePrize();
-                    isSpinning = false;
-                    spinButton.disabled = false;
-                }
-            }
-        
-            // Функция для плавного изменения скорости
-            function lerp(start, end, amt) {
-                return (1 - amt) * start + amt * end;
-            }
-        
-            animationId = requestAnimationFrame(animate);
         }
         
+        if (timeElapsed < duration) {
+            animationId = requestAnimationFrame(animate);
+        } else {
+            clearTimeout(animationId);
+            determinePrize();
+            isSpinning = false;
+            spinButton.disabled = false;
+        }
+    }
+
+    animationId = requestAnimationFrame(animate);
+}
 
 
 function determinePrize() {
