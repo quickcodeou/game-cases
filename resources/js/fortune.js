@@ -41,8 +41,10 @@ const cases = [
 const caseButtons = document.querySelectorAll(".case-btn");
 const spinButton = document.getElementById("spin-btn");
 const prizesContainer = document.querySelector(".prizes-container");
+const rouletteContainer = document.querySelector(".roulette-container");
 const roulette = document.querySelector(".roulette");
 const resultItem = document.getElementById("result");
+const spinRoulette = document.getElementById("spin-btn");
 
 let isSpinning = false;
 let currentPrizes = [];
@@ -76,6 +78,7 @@ function generatePrizeList(prizes) {
 }
 
 function displayPrizes(prizes) {
+    rouletteContainer.classList.remove("active");
     prizesContainer.innerHTML = "";
     prizes.forEach(prize => {
         let item = document.createElement("div");
@@ -94,6 +97,9 @@ function displayPrizes(prizes) {
         img.className = "relative z-10 text-3xl mb-1 p-4 show_prizes__image";
         img.src = prize.image;
         img.alt = prize.name;
+
+        rouletteContainer.classList.add("active");
+        spinRoulette.classList.remove("hidden");
 
         item.appendChild(lightEffect);
         item.appendChild(gradientOverlay);
@@ -122,91 +128,6 @@ function displayPrizes(prizes) {
     });
 }
 
-// function startRoulette() {
-//     isSpinning = true;
-//     spinButton.disabled = true;
-//     roulette.innerHTML = "";
-//     resultItem.textContent = "";
-
-//     currentPrizes.forEach(prize => {
-//         const prizeElement = document.createElement("div");
-//         prizeElement.classList.add("prize");
-//         prizeElement.style.borderBottom = `2px solid ${prize.color}`;
-//         prizeElement.style.background = `linear-gradient(to top, ${prize.color}60, transparent, transparent)`;
-
-//         const lightEffect = document.createElement("div");
-//         lightEffect.className = "absolute prize_item__light";
-//         lightEffect.style.boxShadow = `0 0 70px 40px ${prize.color}`;
-
-//         let img = document.createElement("img");
-//         img.src = prize.image;
-//         img.width = 50;
-//         img.height = 50;
-        
-//         prizeElement.appendChild(lightEffect);
-//         prizeElement.appendChild(img);
-//         roulette.appendChild(prizeElement);
-//     });
-
-//     roulette.style.left = "0px";
-//     let speed = 0;
-//     let timeElapsed = 0;
-//     let duration = 22000; // 22 секунды (увеличили общее время)
-//     let startTime = performance.now();
-
-//     function animate(currentTime) {
-//         if (!isSpinning) return;
-//         timeElapsed = currentTime - startTime;
-        
-//         // Этапы анимации
-//         if (timeElapsed < 5000) {
-//             speed = lerp(speed, 50, 0.1);
-//         } else if (timeElapsed < 12000) {
-//             speed = lerp(speed, 2, 0.08);
-//         } else if (timeElapsed < 20000) {
-//             speed = lerp(speed, 1, 0.04);
-//         } else {
-//             speed = lerp(speed, 0, 0.02);
-//         }
-
-//         let left = parseInt(roulette.style.left || "0", 10);
-//         left -= speed;
-//         roulette.style.left = left + "px";
-
-//         if (Math.abs(left) >= roulette.firstElementChild.offsetWidth) {
-//             roulette.appendChild(roulette.firstElementChild);
-//             roulette.style.left = "0px";
-//         }
-        
-//         if (timeElapsed < duration) {
-//             animationId = requestAnimationFrame(animate);
-//         } else {
-//             clearTimeout(animationId);
-//             determinePrize();
-//             isSpinning = false;
-//             spinButton.disabled = false;
-//         }
-//     }
-
-//     // Функция для плавного изменения скорости
-//     function lerp(start, end, amt) {
-//         return (1 - amt) * start + amt * end;
-//     }
-
-//     animationId = requestAnimationFrame(animate);
-// }
-
-
-        // if (timeElapsed < 5000) {
-        //     speed = lerp(speed, 50, 0.1);
-        // } else if (timeElapsed < 12000) {
-        //     speed = lerp(speed, 2, 0.08);
-        // } else if (timeElapsed < 20000) {
-        //     speed = lerp(speed, 1, 0.04);
-        // } else {
-        //     speed = lerp(speed, 0, 0.02);
-        // }
-
         function startRoulette() {
             isSpinning = true;
             spinButton.disabled = true;
@@ -234,62 +155,38 @@ function displayPrizes(prizes) {
             });
         
             roulette.style.left = "0px";
-            let speed = 0;
-            let timeElapsed = 0;
-            let duration = 22000; // 22 секунды (увеличили общее время)
-            let startTime = performance.now();
-            let targetSpeed = 40; // Начальная целевая скорость
-            let transitionFactor = 0.1; // Начальный коэффициент плавности
-        
-            function animate(currentTime) {
-                if (!isSpinning) return;
-                timeElapsed = currentTime - startTime;
+            let speed = 50;
+    let timeElapsed = 0;
+    let duration = 10000; // 10 секунд
+    let startTime = performance.now();
 
-                if (timeElapsed < 4000) {
-                    speed = lerp(speed, 50, 0.1);
-                } else if (timeElapsed < 8000) {
-                    speed = lerp(speed, 30, 0.08);
-                } else if (timeElapsed < 10000) {
-                    speed = lerp(speed, 15, 0.06);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 5, 0.05);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 2, 0.04);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 1.5, 0.03);
-                } else if (timeElapsed < 12000) {
-                    speed = lerp(speed, 1.2, 0.02);
-                } else if (timeElapsed < 22000) { 
-                    speed = lerp(speed, 1, 0.01); 
-                } else {
-                    speed = lerp(speed, 0, 0.01);
-                }
+    function animate(currentTime) {
+        if (!isSpinning) return;
+        timeElapsed = currentTime - startTime;
         
-                let left = parseInt(roulette.style.left || "0", 10);
-                left -= speed;
-                roulette.style.left = left + "px";
+        let progress = timeElapsed / duration;
+        speed = Math.max(50 * (1 - progress), 0.5);
         
-                if (Math.abs(left) >= roulette.firstElementChild.offsetWidth) {
-                    roulette.appendChild(roulette.firstElementChild);
-                    roulette.style.left = "0px";
-                }
-                
-                if (timeElapsed < duration) {
-                    animationId = requestAnimationFrame(animate);
-                } else {
-                    clearTimeout(animationId);
-                    determinePrize();
-                    isSpinning = false;
-                    spinButton.disabled = false;
-                }
-            }
+        let left = parseInt(roulette.style.left || "0", 10);
+        left -= speed;
+        roulette.style.left = left + "px";
+
+        if (Math.abs(left) >= roulette.firstElementChild.offsetWidth) {
+            roulette.appendChild(roulette.firstElementChild);
+            roulette.style.left = "0px";
+        }
         
-            // Функция для плавного изменения скорости
-            function lerp(start, end, amt) {
-                return (1 - amt) * start + amt * end;
-            }
-        
+        if (timeElapsed < duration) {
             animationId = requestAnimationFrame(animate);
+        } else {
+            clearTimeout(animationId);
+            determinePrize();
+            isSpinning = false;
+            spinButton.disabled = false;
+        }
+    }
+
+    animationId = requestAnimationFrame(animate);
         }
         
 
@@ -317,6 +214,7 @@ function determinePrize() {
 
         // Находим соответствующий объект приза по id
         let winningPrizeImage = closestPrize.querySelector("img").src;
+        const winModal = document.getElementById("win_prizeModal");
         winningPrize = currentPrizes.find(prize => prize.image === winningPrizeImage);
 
         if (winningPrize) {
@@ -327,7 +225,12 @@ function determinePrize() {
             resultItem.innerHTML = `
             <img src="${winningPrize.image}" alt="caseresult" class="win_prize__item">
             <div class="prize_bg" style="background: ${winningPrize.color};"></div>`;
-            setTimeout(createConfetti, 700);
+            
+            setTimeout(winModalShow, 2000);
+
+            function winModalShow(){
+                winModal.classList.remove("hidden");
+            }
         } else {
             resultItem.textContent = "Ошибка определения!";
         }
@@ -336,20 +239,20 @@ function determinePrize() {
     }
 }
 
-function createConfetti() {
-    for (let i = 0; i < 20; i++) {
-        let confetti = document.createElement("div");
-        confetti.classList.add("confetti");
-        confetti.style.left = `${Math.random() * 100}%`;
-        confetti.style.top = `${Math.random() * 50}px`;
-        confetti.style.animationDuration = `${1 + Math.random()}s`;
-        confetti.style.background = ["gold", "red", "orange", "yellow"][Math.floor(Math.random() * 4)];
-        document.body.appendChild(confetti);
-        const winModal = document.getElementById("win_prizeModal");
-        winModal.classList.remove("hidden");
-        setTimeout(() => confetti.remove(), 1500);
-    }
-}
+// function createConfetti() {
+//     for (let i = 0; i < 250; i++) { // Increased the number of confetti pieces
+//         let confetti = document.createElement("div");
+//         confetti.classList.add("confetti");
+//         confetti.style.left = `${Math.random() * 100}%`;
+//         confetti.style.top = `${Math.random() * 50}px`;
+//         confetti.style.animationDuration = `${1 + Math.random()}s`;
+//         confetti.style.background = ["gold", "red", "orange", "yellow", "blue", "green", "purple"][Math.floor(Math.random() * 7)]; // Added more colors
+//         document.body.appendChild(confetti);
+//         const winModal = document.getElementById("win_prizeModal");
+//         winModal.classList.remove("hidden");
+//         setTimeout(() => confetti.remove(), 1500);
+//     }
+// }
 document.getElementById("win_prizeModal").addEventListener("click", function () {
     this.classList.add("hidden"); // Замените "your-class-name" на нужный класс
 });

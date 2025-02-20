@@ -27,12 +27,15 @@ body {
 }
 
 .roulette-container {
-position: relative;
-width: 100%;
-height: 250px;
-margin: 20px auto;
-overflow: hidden;
-/* background: #242424; */
+  position: relative;
+  width: 100%;
+  height: 0px;
+  margin: 20px auto;
+  overflow: hidden;
+  transition: 1.3s ease;
+}
+.roulette-container.active {
+  height: 250px;
 }
 
 .roulette-mask {
@@ -75,23 +78,29 @@ object-fit: contain;
 position: absolute;
 top: -12px;
 left: 50%;
-width: 24px;
-height: 24px;
-background-color: #ffffff;
-transform: translateX(-50%) rotate(45deg);
+transform: translateX(-50%);
+width: 0;
+height: 0;
 z-index: 1;
-border-radius: 4px;
+border-left: 2px solid transparent;
+border-right: 2px solid transparent;
+border-top: 80px solid #ffffff;
+-webkit-mask-image: linear-gradient(to bottom, rgb(255 255 255) 30%, rgba(0, 0, 0, 0) 100%);
+mask-image: linear-gradient(to bottom, rgb(255 255 255) 30%, rgba(0, 0, 0, 0) 100%);
 }
 .marker_bottom {
 position: absolute;
 bottom: -12px;
 left: 50%;
-width: 24px;
-height: 24px;
-background-color: #ffffff;
-transform: translateX(-50%) rotate(45deg);
+transform: translateX(-50%);
+width: 0;
+height: 0;
 z-index: 1;
-border-radius: 4px;
+border-left: 2px solid transparent;
+border-right: 2px solid transparent;
+border-bottom: 60px solid #ffffff;
+-webkit-mask-image: linear-gradient(to bottom, rgb(255 255 255) 50%, rgba(0, 0, 0, 0) 100%);
+mask-image: linear-gradient(to bottom, rgb(255 255 255) 50%, rgba(0, 0, 0, 0) 100%);
 } 
 
 img.prize-img {
@@ -272,6 +281,7 @@ button.case-btn::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 @keyframes showModal {
   from {
@@ -288,7 +298,7 @@ button.case-btn::after {
   object-fit: contain;
   width: 280px;
   transform: scale(0) rotate(0deg);
-  animation: flyPrize 1s ease-out 0.5s forwards;
+  animation: flyPrize ease-out 0.5s forwards;
 }
 .prize_bg {
   position: absolute;
@@ -298,7 +308,7 @@ button.case-btn::after {
   width: 80%;
   height: 80%;
   border-radius: 50%;
-  animation: flyPrizeBg 1s ease-out 0.5s forwards;
+  animation: flyPrizeBg ease-out 0.5s forwards;
 }
 @keyframes flyPrize {
   0% {
@@ -345,4 +355,25 @@ button.case-btn::after {
       transform: translateY(150px) translateX(30px) rotate(360deg);
       opacity: 0;
   }
+}
+button.spin_roulette {
+  padding: 0.2rem 0.8rem;
+  font-size: 1.5rem;
+  color: #fff;
+  font-weight: 700;
+}
+button.spin_roulette span{
+  font-size: 2rem;
+}
+.getItemText{
+  font-size: 1.3rem;
+}
+button.spin_roulette span, .getItemText {
+  cursor: pointer;
+  padding: 0.2rem 0.8rem;
+  background: linear-gradient(18deg, #b73b1f, #e39017);
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 700; 
+  text-transform: uppercase;
 }

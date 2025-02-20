@@ -11,6 +11,7 @@
                     <img src="https://pngimg.com/d/shawarma_PNG4.png" alt="caseresult" class="win_prize__item">
                     <div class="prize_bg" style="background: rgb(30, 255, 0);"></div>
                 </div>
+                <div class="getItemText">Забрать</div>
             </div>
         </div>
         <div class="fortunegame_section__glowBottom"></div>
@@ -52,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <button id="spin-btn">Крутить рулетку</button>
+            <button id="spin-btn" class="spin_roulette hidden">Крутить рулетку <span>100 SP</span> </button>
         </div>
         
         <div class="container mx-auto px-4 py-8 relative z-10">
